@@ -63,7 +63,9 @@ Three corrections are applied over calling Dimorphite-DL directly. Each is guard
 Measured with `molcharge-validate` against experimental data that is **not** redistributed here (fetch it yourself,
 point `MOLCHARGE_DATA_DIR` at it, and check each dataset's licence): the IUPAC digitised pKa dataset, high-confidence
 subset (Zenodo, doi:10.5281/zenodo.11224309), and the SAMPL6 pKa challenge measurements. Nucleotide literature
-values ship in `reference_literature.json`; their DOIs are marked there as pending verification.
+values ship in `reference_literature.json` with a note on what was checked: its one DOI resolves and agrees with
+Crossref, PubMed and the publisher page on title, journal, volume, pages and year; two values carry no specific
+citation; no value was re-checked against the full texts.
 
 | reference set | n | result |
 |---|---|---|
