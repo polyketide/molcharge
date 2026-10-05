@@ -424,7 +424,7 @@ def compute(smiles: str, ph: str = "0:14:0.1", at: list[float] | None = None, en
                 "note": "flag-not-fabricate: no curve for a string RDKit cannot parse"}
     grid = make_grid(lo, hi, step)
     engines: dict[str, dict] = {}
-    want = list(ENGINES) if engine in ("auto", "all") else [engine]
+    want = list(ENGINES) if engine == "all" else (["dimorphite"] if engine == "auto" else [engine])
     for name in want:
         if name == "dimorphite":
             engines[name] = engine_dimorphite(smiles, grid, at, precision)

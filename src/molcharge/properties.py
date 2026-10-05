@@ -100,7 +100,7 @@ def properties(smiles: str, *, with_charge: bool = False, ph: float = 7.4) -> di
     if with_charge:
         try:
             from . import charge as cvp
-            cr = cvp.compute(smiles, ph="0:14:0.1", at=[ph], engine="dimorphite")
+            cr = cvp.compute(smiles, ph="0:14:0.1", at=[ph], engine="dimorphite")   # only engine A is read below
             blk = (cr.get("engines") or {}).get("dimorphite") or {}
             if blk.get("ok"):
                 out["charge"] = {"engine": "dimorphite (rule table, ±σ)", "version": blk.get("version"),
