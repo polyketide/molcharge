@@ -214,7 +214,8 @@ def load_sampl6(d: str) -> dict[str, dict]:
 def load_literature_pka(path: str | None) -> dict[str, dict]:
     """reference_literature.json → {name: {smiles, pkas:[{pka,sem,assignment}], source}} for pKa read-off comparison.
     Use for molecules whose ABSOLUTE net charge depends on a low-pH phosphate convention (nucleotides): we compare the
-    engine's curve inflections (read-off pKa) to the literature pKa, not the absolute Z (Sigel's caveat: conventions differ)."""
+    engine's curve inflections (read-off pKa) to the literature pKa, not the absolute Z (the low-pH convention for the
+    most acidic P–OH groups differs between compilations)."""
     if not path or not os.path.isfile(path):
         return {}
     out = {}
