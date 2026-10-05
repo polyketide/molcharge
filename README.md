@@ -15,7 +15,8 @@ pip install git+https://github.com/polyketide/molcharge
 ```
 
 Requires Python ≥ 3.10. Dependencies: `dimorphite-dl==2.0.2` (pinned, see "Rule-table order" below) and RDKit.
-`matplotlib` is optional (PNG output; an SVG is always written).
+`matplotlib` is optional (PNG output; an SVG is always written):
+`pip install "molcharge[plot] @ git+https://github.com/polyketide/molcharge"`.
 
 ## Use
 
@@ -26,12 +27,15 @@ molcharge-props --smiles "CC(=O)Oc1ccccc1C(=O)O" --with-charge   # RDKit descrip
 molcharge --selftest                               # 18 gates, about one second
 ```
 
+`molcharge-props --selftest` and `molcharge-validate --selftest` check the other two modules; `pytest` runs all three
+(`pip install "molcharge[test] @ git+…"`).
+
 ```python
 from molcharge import compute
 r = compute("NCC(=O)O", at=[7.4])
 blk = r["engines"]["dimorphite"]
 blk["pI"], blk["z_at"][0]          # isoelectric point; Z with its ±σ band at pH 7.4
-blk["sites"]                       # one entry per ionisable site: atom, moiety, acid/base, pKa ± σ
+blk["sites"]                       # one entry per ionisable site: atom_idx, moiety, kind (acid/base), pka, sigma
 ```
 
 ## Method
@@ -68,6 +72,15 @@ values ship in `reference_literature.json` with a note on what was checked: its 
 Crossref, PubMed and the publisher page on title, journal, volume, pages and year; the Alberty pK is traced to
 Alberty & Goldberg, Biochemistry 31, 10610 (1992), at I = 0.25 M, and the
 ATP values at I = 0.1 M to Sigel et al., Inorg. Chem. 26, 2149 (1987); no value was re-checked against the full texts.
+
+`molcharge-validate` looks for these file names in `MOLCHARGE_DATA_DIR` (default `./data`) and silently drops a set
+whose files are absent, so rename after downloading and check the `Data:` line of the report:
+
+    iupac_high-confidence_v2_3.csv
+    sampl6_pKa_experimental_values.csv
+    sampl6_molecule_ID_and_SMILES.norm.csv     # SAMPL6 molecule ID → SMILES table
+
+Reproduce the table with `molcharge-validate --out report` (writes `report.json` and `report.md`).
 
 | reference set | n | result |
 |---|---|---|
