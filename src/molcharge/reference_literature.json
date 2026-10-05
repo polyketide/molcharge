@@ -1,0 +1,44 @@
+{
+  "_note": "Experimental macro pKa for nucleotides, from literature. Used for pKa READ-OFF comparison only: the ABSOLUTE net charge of a polyphosphate depends on the low-pH primary-phosphate convention (Sigel notes several acid-strength models give different H+ counts), so we compare the engine curve's INFLECTIONS to these pKa, not the absolute Z. Values are multi-source consensus at ~25 C, I~0.1; DOIs retrieved via literature search and pending nature-ref-verifier confirmation.",
+  "molecules": [
+    {
+      "name": "ATP",
+      "smiles": "Nc1ncnc2c1ncn2[C@@H]1O[C@H](COP(=O)(O)OP(=O)(O)OP(=O)(O)O)[C@@H](O)[C@H]1O",
+      "conditions": "aqueous, 25 C, I ~ 0.1",
+      "source": "multi-source consensus; see per-pKa source",
+      "pka_ref": [
+        {"pka": 4.0, "assignment": "adenine N1-H+ (base)", "source": "Dawson, Data for Biochemical Research 3e; ATP N1 4.0-4.3"},
+        {"pka": 6.5, "assignment": "terminal (gamma) phosphate, secondary ionization", "source": "Alberty pK(HATP3-)=6.47; Phillips-George-Rutman Biochemistry 1963 DOI 10.1021/bi00903a019 PMID 14069537"}
+      ]
+    },
+    {
+      "name": "ADP",
+      "smiles": "Nc1ncnc2c1ncn2[C@@H]1O[C@H](COP(=O)(O)OP(=O)(O)O)[C@@H](O)[C@H]1O",
+      "conditions": "aqueous, 25 C, I ~ 0.1",
+      "source": "multi-source consensus; see per-pKa source",
+      "pka_ref": [
+        {"pka": 3.9, "assignment": "adenine N1-H+ (base)", "source": "Dawson; ATP/ADP N1 ~3.9-4.0"},
+        {"pka": 6.4, "assignment": "terminal (beta) phosphate, secondary ionization", "source": "Phillips-George-Rutman 1963 DOI 10.1021/bi00903a019; ADP pK2 ~6.3-6.4"}
+      ]
+    },
+    {
+      "name": "5'-AMP",
+      "smiles": "Nc1ncnc2c1ncn2[C@@H]1O[C@H](COP(=O)(O)O)[C@@H](O)[C@H]1O",
+      "conditions": "aqueous, 25 C, I ~ 0.1",
+      "source": "multi-source consensus; see per-pKa source",
+      "pka_ref": [
+        {"pka": 3.8, "assignment": "adenine N1-H+ (base)", "source": "Dawson; 5'-AMP N1 ~3.8"},
+        {"pka": 6.2, "assignment": "phosphate, secondary ionization", "source": "Dawson; 5'-AMP phosphate pK2 ~6.1-6.2"}
+      ]
+    },
+    {
+      "name": "adenosine",
+      "smiles": "Nc1ncnc2c1ncn2[C@@H]1O[C@H](CO)[C@@H](O)[C@H]1O",
+      "conditions": "aqueous, 25 C, I ~ 0.1",
+      "source": "single ionization in the 1-13 window",
+      "pka_ref": [
+        {"pka": 3.5, "assignment": "adenine N1-H+ (base)", "source": "Dawson; adenosine N1 ~3.5"}
+      ]
+    }
+  ]
+}

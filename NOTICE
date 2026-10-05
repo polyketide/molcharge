@@ -1,0 +1,5 @@
+molcharge
+Copyright 2026 polyketide
+
+Uses Dimorphite-DL (Apache-2.0), https://github.com/durrantlab/dimorphite_dl, as a dependency;
+no Dimorphite-DL code is included in this distribution.

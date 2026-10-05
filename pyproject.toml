@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "molcharge"
+version = "0.1.0"
+description = "Net charge versus pH, pKa sites and pI of a small molecule from a SMILES (Dimorphite-DL rule table, local)"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.10"
+dependencies = ["dimorphite-dl==2.0.2", "rdkit"]
+
+[project.optional-dependencies]
+plot = ["matplotlib"]
+test = ["pytest"]
+
+[project.scripts]
+molcharge = "molcharge.charge:main"
+molcharge-props = "molcharge.properties:main"
+molcharge-validate = "molcharge.validate:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+molcharge = ["reference_literature.json"]
