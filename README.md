@@ -65,7 +65,7 @@ point `MOLCHARGE_DATA_DIR` at it, and check each dataset's licence): the IUPAC d
 subset (Zenodo, doi:10.5281/zenodo.11224309), and the SAMPL6 pKa challenge measurements. Nucleotide literature
 values ship in `reference_literature.json` with a note on what was checked: its one DOI resolves and agrees with
 Crossref, PubMed and the publisher page on title, journal, volume, pages and year; the Alberty pK is traced to
-Alberty & Goldberg, Biochemistry 31, 10610 (1992), at I = 0.25 M; one remark carries no specific citation; no value was re-checked against the full texts.
+Alberty & Goldberg, Biochemistry 31, 10610 (1992), at I = 0.25 M; one attributed remark could not be traced to a source; no value was re-checked against the full texts.
 
 | reference set | n | result |
 |---|---|---|
