@@ -1,5 +1,5 @@
 {
-  "_note": "Experimental macro pKa for nucleotides, from literature. Used for pKa READ-OFF comparison only: the ABSOLUTE net charge of a polyphosphate depends on the low-pH primary-phosphate convention (Sigel notes several acid-strength models give different H+ counts), so we compare the engine curve's INFLECTIONS to these pKa, not the absolute Z. Values are multi-source consensus at ~25 C, I~0.1; Reference check 2026-10-05: the one DOI (10.1021/bi00903a019) resolves, and Crossref, PubMed (PMID 14069537) and the ACS page agree on title, journal, volume, issue, pages and year; the author list differs between sources (4 names at ACS/Crossref, 3 at PubMed), so it is cited as Phillips et al. The Dawson book exists (3rd ed., Clarendon Press). The Alberty value and the Sigel remark carry no specific citation and are unverified. No pKa value was re-checked against the full texts.",
+  "_note": "Experimental macro pKa for nucleotides, from literature. Used for pKa READ-OFF comparison only: the ABSOLUTE net charge of a polyphosphate depends on the low-pH primary-phosphate convention (Sigel notes several acid-strength models give different H+ counts), so we compare the engine curve's INFLECTIONS to these pKa, not the absolute Z. Values are multi-source consensus at ~25 C, I~0.1; Reference check 2026-10-05: the one DOI (10.1021/bi00903a019) resolves, and Crossref, PubMed (PMID 14069537) and the ACS page agree on title, journal, volume, issue, pages and year; the author list differs between sources (4 names at ACS/Crossref, 3 at PubMed), so it is cited as Phillips et al. The Dawson book exists (3rd ed., Clarendon Press). The Alberty value is traced to Alberty & Goldberg 1992 (DOI 10.1021/bi00158a025; I = 0.25 M) via its reproduction in Alberty's 2003 book; the Sigel remark carries no specific citation and is unverified. No pKa value was re-checked against the full texts.",
   "molecules": [
     {
       "name": "ATP",
@@ -8,7 +8,7 @@
       "source": "multi-source consensus; see per-pKa source",
       "pka_ref": [
         {"pka": 4.0, "assignment": "adenine N1-H+ (base)", "source": "Dawson, R. M. C. et al. Data for Biochemical Research, 3rd ed., Clarendon Press; ATP N1 4.0-4.3"},
-        {"pka": 6.5, "assignment": "terminal (gamma) phosphate, secondary ionization", "source": "Alberty pK(HATP3-)=6.47 (no specific citation, unverified); Phillips, R. C. et al. Biochemistry 1963, 2(3), 501-508, DOI 10.1021/bi00903a019, PMID 14069537"}
+        {"pka": 6.5, "assignment": "terminal (gamma) phosphate, secondary ionization", "source": "Alberty & Goldberg, Biochemistry 1992, 31, 10610-10615 (table on p. 10612), DOI 10.1021/bi00158a025: K = 3.426e-7 for HATP3- = H+ + ATP4- at 298.15 K and I = 0.25 M, i.e. pK 6.47 (7.60 at I = 0); read from the reproduction in Alberty, Thermodynamics of Biochemical Reactions (Wiley 2003) Table 1.2, not from the 1992 page; note I = 0.25 M, not the ~0.1 of this entry; Phillips, R. C. et al. Biochemistry 1963, 2(3), 501-508, DOI 10.1021/bi00903a019, PMID 14069537"}
       ]
     },
     {
