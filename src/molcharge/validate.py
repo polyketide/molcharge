@@ -2,8 +2,10 @@
 """molcharge-validate — cross-validate charge_vs_ph engines against EXPERIMENTAL pKa data (LOCAL, offline).
 
 Reference sets (all measured, none predicted):
-  A  IUPAC Dissociation-Constants high-confidence set (Zenodo 10.5281/zenodo.11224309; licence per that record, not verified here; NOT redistributed, kept OUTSIDE
-     the repo under $MOLCHARGE_DATA_DIR) → per molecule the median macro pKa of each dissociation step at 20–30 °C, no
+  A  IUPAC Digitized pKa Dataset, high-confidence file (Zheng & Lafontant-Joseph; all versions doi:10.5281/zenodo.7236452;
+     validated on v2.3e, doi:10.5281/zenodo.21533589; CC BY-NC 4.0, reproduced by permission of IUPAC; NOT
+     redistributed, kept OUTSIDE the repo under $MOLCHARGE_DATA_DIR; the version is identified by MD5 because v2.3–v2.3e all
+     ship the file as iupac_high-confidence_v2_3.csv) → per molecule the median macro pKa of each dissociation step at 20–30 °C, no
      cosolvent, assessment Reliable/Approximate → the experimental net-charge curve by the sequential macro model
          f_k ∝ 10^(k·pH − Σ_{j≤k} pKa_j),   Z_ref(pH) = Σ_k f_k · (q_max − k),   q_max = number of pKaH steps
      (a titration curve IS the measurement of these constants; Z(pH) is the same data re-expressed).
@@ -64,6 +66,28 @@ IUPAC_COVERAGE_SET = {
     "saccharin": "O=C1NS(=O)(=O)c2ccccc12", "succinimide": "O=C1CCC(=O)N1",
 }
 PKA_TYPE = re.compile(r"^pKa(H?)(\d)$")
+# MD5 of iupac_high-confidence_*.csv inside each Zenodo release (checked 2026-10-05 against the downloaded zips).
+# The file NAME does not identify the release: v2.3, v2.3b, v2.3c, v2.3d and v2.3e all call it ..._v2_3.csv.
+# Licence per the Zenodo record: CC BY-NC 4.0, except v2.2b and v2.3, recorded there as CC BY-ND 4.0 (their own
+# README says CC BY-NC 4.0).
+IUPAC_RELEASES = {
+    "10a843194f76278c4d95e99308f70bca": ("v2.3", "10.5281/zenodo.15065945"),
+    "0f4dafedbaac62c17a7adc0f96f452b8": ("v2.3b", "10.5281/zenodo.15375522"),
+    "178b3358152ae98e398a9135c43bdae3": ("v2.3c", "10.5281/zenodo.17602743"),
+    "a21679a6c626381c628e598c04b640f7": ("v2.3d", "10.5281/zenodo.19112621"),
+    "90738ae6598579bca6c1cfa86a860c2c": ("v2.3e", "10.5281/zenodo.21533589"),
+    "5b504b0e5754fab50557f3abfc63ae5e": ("v2.4", "10.5281/zenodo.22878440"),
+}
+
+
+def iupac_release(path: str) -> dict:
+    """Identify the IUPAC release of a local high-confidence CSV by MD5 (the file name cannot)."""
+    import hashlib
+    if not os.path.isfile(path):
+        return {"md5": None, "version": None, "doi": None}
+    md5 = hashlib.md5(open(path, "rb").read()).hexdigest()
+    ver, doi = IUPAC_RELEASES.get(md5, (None, None))
+    return {"md5": md5, "version": ver or "unrecognised (file name does not identify the release)", "doi": doi}
 
 
 # ------------------------------------------------------------------------------------------------
@@ -148,6 +172,7 @@ def load_iupac(path: str, names: dict[str, str]) -> dict[str, dict]:
             for name, rank in want.get(r["InChI"], []):
                 rows.setdefault(name, []).append(dict(r, _rank=rank))
     out = {}
+    rel = iupac_release(path)
     for name, rs in rows.items():
         best_rank = min(r["_rank"] for r in rs)
         usable = [r for r in rs if r["_rank"] == best_rank and not r["cosolvent"].strip()
@@ -172,7 +197,7 @@ def load_iupac(path: str, names: dict[str, str]) -> dict[str, dict]:
         q_max = sum(1 for s in steps if s["order"] < 0)   # count of cationic (pKaH*) steps = charge of the fully protonated form
         pkas = [s["median"] for s in steps]
         monotone = all(b > a for a, b in zip(pkas, pkas[1:]))   # strictly ascending medians = a proper sequential ladder
-        out[name] = {"source": "IUPAC Dissociation-Constants v2.3 (high-confidence), medians of 20–30 °C aqueous rows "
+        out[name] = {"source": f"IUPAC Digitized pKa Dataset {rel['version']} (high-confidence), medians of 20–30 °C aqueous rows "
                                "assessed Reliable/Approximate", "steps": steps, "q_max": q_max, "pkas": pkas,
                      "n_rows_usable": len(usable), "stereo_specific_rows": best_rank == 0,
                      "ok": bool(monotone and steps),
@@ -364,6 +389,7 @@ def run(engine: str, iupac_csv: str, sampl6_dir: str, extra_json: str | None) ->
     report["summary"] = summ
     report["data"] = {"iupac_csv": iupac_csv if os.path.isfile(iupac_csv) else None, "sampl6_dir": sampl6_dir if s6 else None,
                       "extra_json": extra_json if (extra_json and os.path.isfile(extra_json)) else None,
+                      "iupac_release": iupac_release(iupac_csv),
                       "n_iupac_loaded": len(iu), "n_iupac_ok": sum(1 for r in iu.values() if r["ok"]), "n_sampl6": len(s6),
                       "n_coverage_loaded": len(iu_cov), "n_coverage_ok": sum(1 for r in iu_cov.values() if r["ok"])}
     return report
@@ -371,6 +397,8 @@ def run(engine: str, iupac_csv: str, sampl6_dir: str, extra_json: str | None) ->
 
 def markdown(report: dict) -> str:
     L = ["# charge_vs_ph — cross-validation against measured pKa", ""]
+    rel = report["data"].get("iupac_release") or {}
+    L.append(f"IUPAC release: {rel.get('version')} (md5 {rel.get('md5')}, doi {rel.get('doi')}); CC BY-NC 4.0, reproduced by permission of IUPAC")
     L.append(f"Data: IUPAC rows loaded {report['data']['n_iupac_loaded']} (usable {report['data']['n_iupac_ok']}), SAMPL6 molecules {report['data']['n_sampl6']}, "
              f"extra literature file: {'yes' if report['data']['extra_json'] else 'no'}")
     L.append("")
@@ -463,6 +491,13 @@ def selftest() -> int:
     # 8 compare_pkas pairing
     m = compare_pkas([3.0, 8.0], [2.5, 8.6, 12.0])
     gate("8 nearest-pKa pairing: deltas −0.5 / +0.6, RMSE 0.552", m["pairs"][0]["delta"] == -0.5 and m["pairs"][1]["delta"] == 0.6 and abs(m["rmse"] - 0.552) < 1e-3, str(m))
+    # 10 an IUPAC file is identified by content, never by name
+    import tempfile
+    with tempfile.NamedTemporaryFile("w", suffix="_v2_3.csv", delete=False) as fh:
+        fh.write("not the dataset\n")
+    rel = iupac_release(fh.name); os.unlink(fh.name)
+    gate("10 IUPAC release identified by MD5, not by file name (a look-alike *_v2_3.csv is 'unrecognised')",
+         rel["version"].startswith("unrecognised") and rel["doi"] is None and len(IUPAC_RELEASES) == 6, str(rel))
     print(f"selftest: {ok}/{ok + bad} passed")
     return 0 if bad == 0 else 1
 
